@@ -1,152 +1,100 @@
-#include "LinkedList.hpp"
-#include "ArrayList.hpp"
 #include <iostream>
-
-// 比较函数用于 ArrayList 排序
-bool ascendingComparator(const int& a, const int& b) {
-    return a < b;
-}
-
-bool descendingComparator(const int& a, const int& b) {
-    return a > b;
-}
-
-/**
- * @brief 测试 LinkedList 的功能
- */
-void testLinkedList() {
-    LinkedList<int> list;
-
-    // 测试插入功能
-    list.insert(0, 10);
-    list.insert(1, 20);
-    list.insert(1, 15);
-    list.print(); // 输出: 10 15 20
-
-    // 测试删除功能
-    list.remove(1);
-    list.print(); // 输出: 10 20
-
-    // 测试查找功能
-    std::cout << "Index of 20: " << list.find(20) << std::endl; // 输出: 1
-    std::cout << "Index of 15: " << list.find(15) << std::endl; // 输出: -1
-
-    // 测试获取和设置功能
-    std::cout << "Element at index 0: " << list.get(0) << std::endl; // 输出: 10
-    list.set(0, 5);
-    std::cout << "Element at index 0 after set: " << list.get(0) << std::endl; // 输出: 5
-
-    // 测试反转功能
-    list.reverse();
-    list.print(); // 输出: 20 5
-
-    // 测试从数组赋值功能
-    int array[] = {1, 2, 3, 4, 5};
-    list.assignFromArray(array, 5);
-    list.print(); // 输出: 1 2 3 4 5
-
-    // 测试排序功能
-    list.insert(0, 10);
-    list.sort();
-    list.print(); // 输出: 1 2 3 4 5 10
-
-    // 测试合并功能
-    LinkedList<int> otherList;
-    otherList.insert(0, 100);
-    otherList.insert(1, 200);
-    list.merge(otherList);
-    list.print(); // 输出: 1 2 3 4 5 10 100 200
-
-    // 测试清空功能
-    list.clear();
-    list.print(); // 输出: (空行)
-
-    // 测试迭代器功能
-    list.assignFromArray(array, 5);
-    for (auto& item : list) {
-        std::cout << item << " ";
-    }
-    std::cout << std::endl; // 输出: 1 2 3 4 5
-}
-
-/**
- * @brief 测试 ArrayList 的功能
- */
-void testArrayList() {
-    // 创建并初始化 ArrayList
-    ArrayList<int> list = {5, 2, 9, 1, 5, 6};
-
-    std::cout << "Initial list: ";
-    list.print();
-
-    // 测试插入功能
-    list.insert(2, 10);
-    std::cout << "After inserting 10 at index 2: ";
-    list.print();
-
-    // 测试删除功能
-    list.remove(4);
-    std::cout << "After removing element at index 4: ";
-    list.print();
-
-    // 测试查找功能
-    int index = list.find(9);
-    std::cout << "Index of element 9: " << index << std::endl;
-
-    // 测试获取功能
-    int value = list.get(3);
-    std::cout << "Element at index 3: " << value << std::endl;
-
-    // 测试设置功能
-    list.set(3, 15);
-    std::cout << "After setting index 3 to 15: ";
-    list.print();
-
-    // 测试大小和容量
-    std::cout << "Size: " << list.size() << ", Capacity: " << list.capacity() << std::endl;
-
-    // 测试排序（升序）
-    list.sort(ascendingComparator);
-    std::cout << "Sorted in ascending order: ";
-    list.print();
-
-    // 测试排序（降序）
-    list.sort(descendingComparator);
-    std::cout << "Sorted in descending order: ";
-    list.print();
-
-    // 测试反转功能
-    list.reverse();
-    std::cout << "After reversing: ";
-    list.print();
-
-    // 测试清空功能
-    list.clear();
-    std::cout << "After clearing: ";
-    list.print();
-    std::cout << "Size after clearing: " << list.size() << std::endl;
-
-    // 测试从数组赋值功能
-    int array[] = {3, 8, 7, 5};
-    list.assignFromArray(array, 4);
-    std::cout << "After assigning from array: ";
-    list.print();
-
-    // 测试缩减容量功能
-    list.shrinkToFit();
-    std::cout << "After shrinkToFit: Capacity: " << list.capacity() << std::endl;
-
-    // 测试预留容量功能
-    list.reserve(10);
-    std::cout << "After reserving capacity 10: Capacity: " << list.capacity() << std::endl;
-}
+#include "LinkedList.hpp"  // 确保包含正确的头文件路径
+#include "DoublyLinkedList.hpp"
+#include "Polynomial.hpp"
 
 int main() {
-    std::cout << "Testing LinkedList:" << std::endl;
-    testLinkedList();
+    // ****************** 单向链表测试 ******************
+    std::cout << "********** Singly Linked List Test **********" << std::endl;
+    LinkedList<int> list;
 
-    std::cout << "\nTesting ArrayList:" << std::endl;
-    testArrayList();
+    // 插入一些元素
+    list.insert(0, 10);
+    list.insert(1, 20);
+    list.insert(2, 30);
+    list.insert(3, 20);
+    list.insert(4, 40);
+
+    // 测试定位函数
+    auto node = list.locate(2); // 寻找索引为2的节点
+    if (node) {
+        std::cout << "Node at index 2: " << node->data << " Node location: " << node << std::endl;
+    } else {
+        std::cout << "Node at index 2 not found." << std::endl;
+    }
+
+    node = list.locate(5); // 寻找不存在的索引
+    if (node) {
+        std::cout << "Node at index 5: " << node->data << " Node location: " << node << std::endl;
+    } else {
+        std::cout << "Node at index 5 not found." << std::endl; // 应输出: Node at index 5 not found.
+    }
+
+    // 测试统计函数
+    size_t count = list.count(20); // 统计值为20的元素个数
+    std::cout << "Count of 20: " << count << std::endl; // 应输出: 2
+
+    count = list.count(50); // 统计不存在的值
+    std::cout << "Count of 50: " << count << std::endl; // 应输出: 0
+
+    // ****************** 双向链表测试 ******************
+    std::cout << "\n**********  Doubly Linked List Test **********" << std::endl;
+    DoublyLinkedList<int> dlist;
+
+    // 打印空链表
+    std::cout << "Initial empty list: ";
+    dlist.print();
+
+    // 插入元素
+    dlist.insert(0, 10);
+    dlist.insert(1, 20);
+    dlist.insert(2, 30);
+    dlist.insert(1, 15); // 在索引1处插入15
+
+    // 打印插入后的链表
+    std::cout << "List after insertions: ";
+    dlist.print();
+
+    // 查找元素
+    int index = dlist.find(20);
+    if (index != -1) {
+        std::cout << "Element 20 found at index: " << index << std::endl;
+    } else {
+        std::cout << "Element 20 not found." << std::endl;
+    }
+
+    // 删除元素
+    dlist.remove(1); // 删除索引1处的元素
+
+    // 打印删除后的链表
+    std::cout << "List after deletion: ";
+    dlist.print();
+
+    // 尝试查找已删除的元素
+    index = dlist.find(15);
+    if (index != -1) {
+        std::cout << "Element 15 found at index: " << index << std::endl;
+    } else {
+        std::cout << "Element 15 not found." << std::endl;
+    }
+
+    // ****************** 多项式测试 ******************
+    std::cout << "\n**********  Polynomial Test **********" << std::endl;
+    Polynomial p1 = {3, 0, 2}; // 3 + 0*x + 2*x^2
+    Polynomial p2 = {1, 4, 0, 5}; // 1 + 4*x + 0*x^2 + 5*x^3
+
+    double value1 = p1.Calc(2.0);
+    double value2 = p2.Calc(2.0);
+
+    std::cout << "p1 evaluated at x = 2: " << value1 << std::endl; 
+    std::cout << "p2 evaluated at x = 2: " << value2 << std::endl; 
+
+    Polynomial p3 = p1 + p2;
+
+    std::cout << "p1 + p2: ";
+    p3.print(); 
+    double value3 = p3.Calc(2.0);
+    std::cout << "p3 evaluated at x = 2: " << value3 << std::endl;
 
     return 0;
 }

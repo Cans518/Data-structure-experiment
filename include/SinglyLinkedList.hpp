@@ -1,13 +1,12 @@
-#ifndef LINKEDLIST_HPP
-#define LINKEDLIST_HPP
+#ifndef SINGLYLINKEDLIST_HPP
+#define SINGLYLINKEDLIST_HPP
 
 #include <iostream>
 #include <stdexcept>
-#include <utility> // For std::swap
 #include <functional> // For std::function
 
 template <typename T>
-class LinkedList {
+class SinglyLinkedList {
 private:
     struct Node {
         T data;
@@ -19,17 +18,17 @@ private:
     size_t length;
 
     Node* getNode(size_t index) const;
-    void copyFrom(const LinkedList& other);
-    void moveFrom(LinkedList&& other);
+    void copyFrom(const SinglyLinkedList& other);
+    void moveFrom(SinglyLinkedList&& other);
     void free();
 
 public:
-    LinkedList();
-    ~LinkedList();
-    LinkedList(const LinkedList& other);
-    LinkedList& operator=(const LinkedList& other);
-    LinkedList(LinkedList&& other) noexcept;
-    LinkedList& operator=(LinkedList&& other) noexcept;
+    SinglyLinkedList();
+    ~SinglyLinkedList();
+    SinglyLinkedList(const SinglyLinkedList& other);
+    SinglyLinkedList& operator=(const SinglyLinkedList& other);
+    SinglyLinkedList(SinglyLinkedList&& other) noexcept;
+    SinglyLinkedList& operator=(SinglyLinkedList&& other) noexcept;
 
     void insert(size_t index, const T& value);
     void remove(size_t index);
@@ -42,31 +41,24 @@ public:
     void reverse();
     void clear();
     void sort(const std::function<bool(const T&, const T&)>& comp = std::less<T>());
-    void merge(LinkedList& other);
-
-    // The Ex2 solution
-    Node* locate(size_t index);
-    size_t count(const T& value) const;
 
     // Iterator support
     class Iterator;
     Iterator begin() const;
     Iterator end() const;
-
-
 };
 
 /**
  * @brief 默认构造函数
  */
 template <typename T>
-LinkedList<T>::LinkedList() : head(nullptr), length(0) {}
+SinglyLinkedList<T>::SinglyLinkedList() : head(nullptr), length(0) {}
 
 /**
  * @brief 析构函数
  */
 template <typename T>
-LinkedList<T>::~LinkedList() {
+SinglyLinkedList<T>::~SinglyLinkedList() {
     free();
 }
 
@@ -75,17 +67,17 @@ LinkedList<T>::~LinkedList() {
  * @param other 要拷贝的链表
  */
 template <typename T>
-LinkedList<T>::LinkedList(const LinkedList& other) : head(nullptr), length(0) {
+SinglyLinkedList<T>::SinglyLinkedList(const SinglyLinkedList& other) : head(nullptr), length(0) {
     copyFrom(other);
 }
 
 /**
  * @brief 拷贝赋值运算符
  * @param other 要拷贝的链表
- * @return LinkedList& 链表自身引用
+ * @return SinglyLinkedList& 链表自身引用
  */
 template <typename T>
-LinkedList<T>& LinkedList<T>::operator=(const LinkedList& other) {
+SinglyLinkedList<T>& SinglyLinkedList<T>::operator=(const SinglyLinkedList& other) {
     if (this != &other) {
         free();
         copyFrom(other);
@@ -98,17 +90,17 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList& other) {
  * @param other 要移动的链表
  */
 template <typename T>
-LinkedList<T>::LinkedList(LinkedList&& other) noexcept : head(nullptr), length(0) {
+SinglyLinkedList<T>::SinglyLinkedList(SinglyLinkedList&& other) noexcept : head(nullptr), length(0) {
     moveFrom(std::move(other));
 }
 
 /**
  * @brief 移动赋值运算符
  * @param other 要移动的链表
- * @return LinkedList& 链表自身引用
+ * @return SinglyLinkedList& 链表自身引用
  */
 template <typename T>
-LinkedList<T>& LinkedList<T>::operator=(LinkedList&& other) noexcept {
+SinglyLinkedList<T>& SinglyLinkedList<T>::operator=(SinglyLinkedList&& other) noexcept {
     if (this != &other) {
         free();
         moveFrom(std::move(other));
@@ -122,7 +114,7 @@ LinkedList<T>& LinkedList<T>::operator=(LinkedList&& other) noexcept {
  * @param value 插入的元素
  */
 template <typename T>
-void LinkedList<T>::insert(size_t index, const T& value) {
+void SinglyLinkedList<T>::insert(size_t index, const T& value) {
     if (index > length) {
         throw std::out_of_range("Index out of range");
     }
@@ -131,9 +123,9 @@ void LinkedList<T>::insert(size_t index, const T& value) {
         newNode->next = head;
         head = newNode;
     } else {
-        Node* prev = getNode(index - 1);
-        newNode->next = prev->next;
-        prev->next = newNode;
+        Node* prevNode = getNode(index - 1);
+        newNode->next = prevNode->next;
+        prevNode->next = newNode;
     }
     ++length;
 }
@@ -143,18 +135,18 @@ void LinkedList<T>::insert(size_t index, const T& value) {
  * @param index 要移除的元素位置
  */
 template <typename T>
-void LinkedList<T>::remove(size_t index) {
+void SinglyLinkedList<T>::remove(size_t index) {
     if (index >= length) {
         throw std::out_of_range("Index out of range");
     }
-    Node* toDelete;
+    Node* toDelete = nullptr;
     if (index == 0) {
         toDelete = head;
         head = head->next;
     } else {
-        Node* prev = getNode(index - 1);
-        toDelete = prev->next;
-        prev->next = toDelete->next;
+        Node* prevNode = getNode(index - 1);
+        toDelete = prevNode->next;
+        prevNode->next = toDelete->next;
     }
     delete toDelete;
     --length;
@@ -166,7 +158,7 @@ void LinkedList<T>::remove(size_t index) {
  * @return int 元素的索引，找不到返回-1
  */
 template <typename T>
-int LinkedList<T>::find(const T& value) const {
+int SinglyLinkedList<T>::find(const T& value) const {
     Node* current = head;
     size_t index = 0;
     while (current != nullptr) {
@@ -185,7 +177,7 @@ int LinkedList<T>::find(const T& value) const {
  * @return T 元素值
  */
 template <typename T>
-T LinkedList<T>::get(size_t index) const {
+T SinglyLinkedList<T>::get(size_t index) const {
     if (index >= length) {
         throw std::out_of_range("Index out of range");
     }
@@ -198,7 +190,7 @@ T LinkedList<T>::get(size_t index) const {
  * @param value 新的元素值
  */
 template <typename T>
-void LinkedList<T>::set(size_t index, const T& value) {
+void SinglyLinkedList<T>::set(size_t index, const T& value) {
     if (index >= length) {
         throw std::out_of_range("Index out of range");
     }
@@ -210,7 +202,7 @@ void LinkedList<T>::set(size_t index, const T& value) {
  * @return size_t 元素数量
  */
 template <typename T>
-size_t LinkedList<T>::size() const {
+size_t SinglyLinkedList<T>::size() const {
     return length;
 }
 
@@ -218,8 +210,12 @@ size_t LinkedList<T>::size() const {
  * @brief 打印所有元素
  */
 template <typename T>
-void LinkedList<T>::print() const {
+void SinglyLinkedList<T>::print() const {
     Node* current = head;
+    if (length == 0) {
+        std::cout << "Empty list" << std::endl;
+        return;
+    }
     while (current != nullptr) {
         std::cout << current->data << " ";
         current = current->next;
@@ -233,7 +229,7 @@ void LinkedList<T>::print() const {
  * @param array_size 数组大小
  */
 template <typename T>
-void LinkedList<T>::assignFromArray(const T* array, size_t array_size) {
+void SinglyLinkedList<T>::assignFromArray(const T* array, size_t array_size) {
     clear();
     for (size_t i = 0; i < array_size; ++i) {
         insert(length, array[i]);
@@ -244,7 +240,7 @@ void LinkedList<T>::assignFromArray(const T* array, size_t array_size) {
  * @brief 反转链表
  */
 template <typename T>
-void LinkedList<T>::reverse() {
+void SinglyLinkedList<T>::reverse() {
     Node* prev = nullptr;
     Node* current = head;
     Node* next = nullptr;
@@ -261,7 +257,7 @@ void LinkedList<T>::reverse() {
  * @brief 清空链表
  */
 template <typename T>
-void LinkedList<T>::clear() {
+void SinglyLinkedList<T>::clear() {
     free();
     head = nullptr;
     length = 0;
@@ -272,75 +268,18 @@ void LinkedList<T>::clear() {
  * @param comp 比较函数对象
  */
 template <typename T>
-void LinkedList<T>::sort(const std::function<bool(const T&, const T&)>& comp) {
+void SinglyLinkedList<T>::sort(const std::function<bool(const T&, const T&)>& comp) {
     if (length < 2) return;
 
     for (size_t i = 0; i < length - 1; ++i) {
         Node* current = head;
-        Node* next = head->next;
         for (size_t j = 0; j < length - i - 1; ++j) {
-            if (!comp(current->data, next->data)) {
-                std::swap(current->data, next->data);
+            if (!comp(current->data, current->next->data)) {
+                std::swap(current->data, current->next->data);
             }
-            current = next;
-            next = next->next;
-        }
-    }
-}
-
-/**
- * @brief 合并另一个链表
- * @param other 要合并的链表
- */
-template <typename T>
-void LinkedList<T>::merge(LinkedList& other) {
-    if (this == &other) return;
-
-    if (!head) {
-        head = other.head;
-    } else {
-        Node* current = head;
-        while (current->next) {
             current = current->next;
         }
-        current->next = other.head;
     }
-    length += other.length;
-    other.head = nullptr;
-    other.length = 0;
-}
-
-/**
- * @brief 定位函数：寻找第i个节点
- * @param index 节点索引
- * @return Node* 第i个节点的地址，若不存在则返回nullptr
- */
-template <typename T>
-typename LinkedList<T>::Node* LinkedList<T>::locate(size_t index){
-    if (index >= length) {
-        return nullptr;
-    }
-    Node* current = getNode(index);
-    return current;
-}
-
-
-/**
- * @brief 统计函数：统计等于给定值的元素个数
- * @param value 要统计的值
- * @return size_t 元素个数
- */
-template <typename T>
-size_t LinkedList<T>::count(const T& value) const {
-    size_t count = 0;
-    Node* current = head;
-    while (current != nullptr) {
-        if (current->data == value) {
-            ++count;
-        }
-        current = current->next;
-    }
-    return count;
 }
 
 // 迭代器支持
@@ -349,19 +288,39 @@ size_t LinkedList<T>::count(const T& value) const {
  * @brief 迭代器类
  */
 template <typename T>
-class LinkedList<T>::Iterator {
-public:
-    Iterator(Node* node) : current(node) {}
+class SinglyLinkedList<T>::Iterator {
+    private:
+        Node* current;
 
-    T& operator*() const { return current->data; }
-    Iterator& operator++() { 
-        current = current->next; 
-        return *this; 
-    }
-    bool operator!=(const Iterator& other) const { return current != other.current; }
+    public:
+        Iterator(Node* node) : current(node) {}
 
-private:
-    Node* current;
+        T& operator*() const {
+            return current->data;
+        }
+
+        T* operator->() const {
+            return &(current->data);
+        }
+
+        bool operator==(const Iterator& other) const {
+            return current == other.current;
+        }
+
+        bool operator!=(const Iterator& other) const {
+            return current != other.current;
+        }
+
+        Iterator& operator++() {
+            if (current) current = current->next;
+            return *this;
+        }
+
+        Iterator operator++(int) {
+            Iterator temp = *this;
+            ++(*this);
+            return temp;
+        }
 };
 
 /**
@@ -369,7 +328,7 @@ private:
  * @return Iterator 迭代器
  */
 template <typename T>
-typename LinkedList<T>::Iterator LinkedList<T>::begin() const {
+typename SinglyLinkedList<T>::Iterator SinglyLinkedList<T>::begin() const {
     return Iterator(head);
 }
 
@@ -378,7 +337,7 @@ typename LinkedList<T>::Iterator LinkedList<T>::begin() const {
  * @return Iterator 迭代器
  */
 template <typename T>
-typename LinkedList<T>::Iterator LinkedList<T>::end() const {
+typename SinglyLinkedList<T>::Iterator SinglyLinkedList<T>::end() const {
     return Iterator(nullptr);
 }
 
@@ -390,7 +349,10 @@ typename LinkedList<T>::Iterator LinkedList<T>::end() const {
  * @return Node* 节点指针
  */
 template <typename T>
-typename LinkedList<T>::Node* LinkedList<T>::getNode(size_t index) const {
+typename SinglyLinkedList<T>::Node* SinglyLinkedList<T>::getNode(size_t index) const {
+    if (index >= length) {
+        throw std::out_of_range("Index out of range");
+    }
     Node* current = head;
     for (size_t i = 0; i < index; ++i) {
         current = current->next;
@@ -403,7 +365,7 @@ typename LinkedList<T>::Node* LinkedList<T>::getNode(size_t index) const {
  * @param other 源链表
  */
 template <typename T>
-void LinkedList<T>::copyFrom(const LinkedList& other) {
+void SinglyLinkedList<T>::copyFrom(const SinglyLinkedList& other) {
     Node* current = other.head;
     while (current != nullptr) {
         insert(length, current->data);
@@ -416,7 +378,7 @@ void LinkedList<T>::copyFrom(const LinkedList& other) {
  * @param other 源链表
  */
 template <typename T>
-void LinkedList<T>::moveFrom(LinkedList&& other) {
+void SinglyLinkedList<T>::moveFrom(SinglyLinkedList&& other) {
     head = other.head;
     length = other.length;
     other.head = nullptr;
@@ -427,7 +389,7 @@ void LinkedList<T>::moveFrom(LinkedList&& other) {
  * @brief 释放链表内存
  */
 template <typename T>
-void LinkedList<T>::free() {
+void SinglyLinkedList<T>::free() {
     Node* current = head;
     while (current != nullptr) {
         Node* next = current->next;
@@ -436,4 +398,4 @@ void LinkedList<T>::free() {
     }
 }
 
-#endif // LINKEDLIST_HPP
+#endif // SINGLYLINKEDLIST_HPP
