@@ -1,100 +1,86 @@
 #include <iostream>
-#include "LinkedList.hpp"  // 确保包含正确的头文件路径
-#include "DoublyLinkedList.hpp"
-#include "Polynomial.hpp"
+#include <vector>
+#include <string>
+#include <io.h>
+#include <fcntl.h>
+#include "ExpressionEvaluator.hpp"
+#include "CircularQueue.hpp"
+
+void runExpressionEvaluatorTests() {
+    ExpressionEvaluator evaluator;
+    std::vector<std::pair<std::string, double>> tests = {
+        {"3 + 5 * ( 2 - (8 + 2) ) + 12 / 4 - 6 + 7 * (8 - (3 + 2))", -19},
+        {"10 + 2 * 6", 22},
+        {"100 * 2 + 12", 212},
+        {"100 * ( 2 + 12 )", 1400},
+        {"100 * ( 2 + 12 ) / 14", 100},
+        {"3.5 + 2.1 * (4 - 2) / 2", 5.6}
+    };
+
+    for (const auto& test : tests) {
+        try {
+            double result = evaluator.evaluate(test.first);
+            if (result == test.second) {
+                std::cout << "Test passed for expression: " << test.first << std::endl;
+            } else {
+                std::cout << "Test failed for expression: " << test.first 
+                          << ". Expected: " << test.second 
+                          << ", Got: " << result << std::endl;
+            }
+        } catch (const std::exception& e) {
+            std::cerr << "Error evaluating expression: " << test.first 
+                      << ". Error: " << e.what() << std::endl;
+        }
+    }
+}
+
+void runCircularQueueTests() {
+    try {
+        CircularQueue<int> queue(3);
+
+        queue.enqueue(1);
+        queue.enqueue(2);
+        queue.enqueue(3);
+
+        try {
+            queue.enqueue(4);
+        } catch (const std::overflow_error& e) {
+            std::cout << "Expected overflow error: " << e.what() << std::endl;
+        }
+
+        std::cout << "Front element: " << queue.frontElement() << std::endl;
+        std::cout << "Back element: " << queue.backElement() << std::endl;
+        std::cout << "Queue size: " << queue.size() << std::endl;
+
+        queue.dequeue();
+        std::cout << "Front element after dequeue: " << queue.frontElement() << std::endl;
+
+        queue.enqueue(4);
+        std::cout << "Back element after enqueue: " << queue.backElement() << std::endl;
+
+        queue.clear();
+        std::cout << "Queue size after clear: " << queue.size() << std::endl;
+
+        try {
+            queue.dequeue();
+        } catch (const std::underflow_error& e) {
+            std::cout << "Expected underflow error: " << e.what() << std::endl;
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Unexpected error: " << e.what() << std::endl;
+    }
+}
 
 int main() {
-    // ****************** 单向链表测试 ******************
-    std::cout << "********** Singly Linked List Test **********" << std::endl;
-    LinkedList<int> list;
 
-    // 插入一些元素
-    list.insert(0, 10);
-    list.insert(1, 20);
-    list.insert(2, 30);
-    list.insert(3, 20);
-    list.insert(4, 40);
+    std::wcout << L"Running Expression Evaluator Tests:\n";
+    runExpressionEvaluatorTests();
 
-    // 测试定位函数
-    auto node = list.locate(2); // 寻找索引为2的节点
-    if (node) {
-        std::cout << "Node at index 2: " << node->data << " Node location: " << node << std::endl;
-    } else {
-        std::cout << "Node at index 2 not found." << std::endl;
-    }
+    std::wcout << L"\n-----------------------------\n";
 
-    node = list.locate(5); // 寻找不存在的索引
-    if (node) {
-        std::cout << "Node at index 5: " << node->data << " Node location: " << node << std::endl;
-    } else {
-        std::cout << "Node at index 5 not found." << std::endl; // 应输出: Node at index 5 not found.
-    }
-
-    // 测试统计函数
-    size_t count = list.count(20); // 统计值为20的元素个数
-    std::cout << "Count of 20: " << count << std::endl; // 应输出: 2
-
-    count = list.count(50); // 统计不存在的值
-    std::cout << "Count of 50: " << count << std::endl; // 应输出: 0
-
-    // ****************** 双向链表测试 ******************
-    std::cout << "\n**********  Doubly Linked List Test **********" << std::endl;
-    DoublyLinkedList<int> dlist;
-
-    // 打印空链表
-    std::cout << "Initial empty list: ";
-    dlist.print();
-
-    // 插入元素
-    dlist.insert(0, 10);
-    dlist.insert(1, 20);
-    dlist.insert(2, 30);
-    dlist.insert(1, 15); // 在索引1处插入15
-
-    // 打印插入后的链表
-    std::cout << "List after insertions: ";
-    dlist.print();
-
-    // 查找元素
-    int index = dlist.find(20);
-    if (index != -1) {
-        std::cout << "Element 20 found at index: " << index << std::endl;
-    } else {
-        std::cout << "Element 20 not found." << std::endl;
-    }
-
-    // 删除元素
-    dlist.remove(1); // 删除索引1处的元素
-
-    // 打印删除后的链表
-    std::cout << "List after deletion: ";
-    dlist.print();
-
-    // 尝试查找已删除的元素
-    index = dlist.find(15);
-    if (index != -1) {
-        std::cout << "Element 15 found at index: " << index << std::endl;
-    } else {
-        std::cout << "Element 15 not found." << std::endl;
-    }
-
-    // ****************** 多项式测试 ******************
-    std::cout << "\n**********  Polynomial Test **********" << std::endl;
-    Polynomial p1 = {3, 0, 2}; // 3 + 0*x + 2*x^2
-    Polynomial p2 = {1, 4, 0, 5}; // 1 + 4*x + 0*x^2 + 5*x^3
-
-    double value1 = p1.Calc(2.0);
-    double value2 = p2.Calc(2.0);
-
-    std::cout << "p1 evaluated at x = 2: " << value1 << std::endl; 
-    std::cout << "p2 evaluated at x = 2: " << value2 << std::endl; 
-
-    Polynomial p3 = p1 + p2;
-
-    std::cout << "p1 + p2: ";
-    p3.print(); 
-    double value3 = p3.Calc(2.0);
-    std::cout << "p3 evaluated at x = 2: " << value3 << std::endl;
+    std::wcout << L"Running Circular Queue Tests:\n";
+    runCircularQueueTests();
 
     return 0;
 }
