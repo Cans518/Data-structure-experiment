@@ -178,3 +178,6 @@ Thumbs.db
 *.ovf
 *.qcow
 *.qcow2
+
+# word临时文件 
+~$*.*

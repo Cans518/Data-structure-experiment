@@ -1,21 +1,10 @@
-# 队列实验
+# 二叉树实验 - 实验05
 
 ## 实验内容
-### 一. 编写程序，实现KMP算法；
+### 一. 根据n元多项式链表的存储结构，画出下列三元多项式的存储结构图。
+$$P(x,y,z) = 2x^{7}y^{3}z^{2} +x^{5}y^{4}z^{2} + 6x^{3}y^{5}z+ 3xyz + 10$$
 
-### 二. 按照要求实现阿克曼函数的计算
-$$
-    ACK(m, n) = 
-   \begin{cases} 
-   n + 1 & \text{for } m = 0 \\ 
-   \text{ACK}(m - 1, 1) & \text{for } m \neq 0, n = 0 \\ 
-   \text{ACK}(m - 1, \text{ACK}(m, n - 1)) & \text{for } m \neq 0, n \neq 0 
-   \end{cases}
-   $$
-
-1. 给出计算 $\text{ACK}(m, n)$ 的递归算法和非递归算法。
-2. 写出 $\text{ACK}(2, 1)$ 的计算过程。（注：程序打印出来也可以，手动写出来也可以）
-
+### 二. （编程题）构造一棵二叉树，分别实现先序、中序、后序遍历方法，并将结果打印出来。
 
 
 ## 实现
@@ -27,33 +16,55 @@ $$
 ## 实验现象
 
 ### 题目一
+使用`PlantUML`进行绘图，具体代码如下：
+```PlantUML
+@startuml
+class Node {
+  coefficient: int
+  exp_x: int
+  exp_y: int
+  exp_z: int
+  next: Node
+}
 
-详细见`include/KMP.hpp`
-测试样例可以见`test/KMP_test.cpp`
+Node1 : coefficient = 2
+Node1 : exp_x = 7
+Node1 : exp_y = 3
+Node1 : exp_z = 2
 
-![alt text](image-1.png)
+Node2 : coefficient = 1
+Node2 : exp_x = 5
+Node2 : exp_y = 4
+Node2 : exp_z = 2
+
+Node3 : coefficient = 6
+Node3 : exp_x = 3
+Node3 : exp_y = 5
+Node3 : exp_z = 1
+
+Node4 : coefficient = 3
+Node4 : exp_x = 1
+Node4 : exp_y = 1
+Node4 : exp_z = 1
+
+Node5 : coefficient = 10
+Node5 : exp_x = 0
+Node5 : exp_y = 0
+Node5 : exp_z = 0
+
+Node1 -> Node2
+Node2 -> Node3
+Node3 -> Node4
+Node4 -> Node5
+@enduml
+```
+表图如下：
+![alt text](image-2.png)
 
 ### 题目二
-1. 详细见`include/Ackermann.hpp`
-    ![code](code.png)
-2. 测试效果
-    ![alt text](image.png)
 
-更加直观的计算过程
-$$
-\begin{align*}
-\text{ACK}(2, 1) & = \text{ACK}(1, \text{ACK}(2, 0)) \\
-                 & = \text{ACK}(1, \text{ACK}(1, 1)) \\
-                 & = \text{ACK}(1, \text{ACK}(0, \text{ACK}(1, 0))) \\
-                 & = \text{ACK}(1, \text{ACK}(0, \text{ACK}(0, 1))) \\
-                 & = \text{ACK}(1, \text{ACK}(0, 2)) \\
-                 & = \text{ACK}(1, 3) \\
-                 & = \text{ACK}(0, \text{ACK}(1, 2)) \\
-                 & = \text{ACK}(0, \text{ACK}(0, \text{ACK}(1, 1))) \\
-                 & = \text{ACK}(0, \text{ACK}(0, 3)) \\
-                 & = \text{ACK}(0, 4) \\
-                 & = 5
-\end{align*}
-$$
-
-最终，得到 $\text{ACK}(2, 1) = 5$。
+具体实现参考`include/BinaryTree.hpp`,在`src/main.cpp`中进行测试。
+测试建立的二叉树如下：
+![alt text](image-1.png)
+以下是运行结果：
+![alt text](image.png)
