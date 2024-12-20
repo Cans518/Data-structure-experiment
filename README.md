@@ -17,7 +17,7 @@ $$P(x,y,z) = 2x^{7}y^{3}z^{2} +x^{5}y^{4}z^{2} + 6x^{3}y^{5}z+ 3xyz + 10$$
 
 ### 题目一
 使用`PlantUML`进行绘图，具体代码如下：
-```PlantUML
+```
 @startuml
 class Node {
   coefficient: int
