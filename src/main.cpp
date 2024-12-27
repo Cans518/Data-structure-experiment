@@ -1,29 +1,46 @@
-#include "BinaryTree.hpp"
-#include <cassert>
+#include <iostream>
+#include <vector>
+#include "heap.hpp"
+
+void printVector(const std::vector<int>& vec) {
+    for (int num : vec) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+}
+
+void testHeap(std::vector<int> arr) {
+    int heapType = Heap::determineHeapType(arr);
+
+    if (heapType == 0) {
+        std::cout << "The sequence is not a heap. \nConverting to a max heap:" << std::endl;
+        std::vector<int> max_arr = arr;
+        int turns_max = Heap::buildMaxHeap(max_arr);
+        printVector(max_arr);
+        printf("Number of swaps: %d\n", turns_max);
+        std::vector<int> min_arr = arr;
+        std::cout << "Converting to a min heap:" << std::endl;
+        int turns_min = Heap::buildMinHeap(min_arr);
+        printVector(min_arr);
+        printf("Number of swaps: %d\n", turns_min);
+    } else if (heapType == 1) {
+        std::cout << "The sequence is a max heap:" << std::endl;
+        printVector(arr);
+    } else if (heapType == 2) {
+        std::cout << "The sequence is a min heap:" << std::endl;
+        printVector(arr);
+    }
+}
 
 int main() {
-    BinaryTree<int> tree;
+    std::vector<int> sequence1 = {100, 86, 48, 73, 35, 39, 42, 57, 66, 21};
+    std::vector<int> sequence2 = {12, 70, 33, 65, 24, 56, 48, 92, 86, 33};
 
-    // 插入节点
-    tree.insert(10);
-    tree.insert(5);
-    tree.insert(15);
-    tree.insert(3);
-    tree.insert(7);
-    tree.insert(12);
-    tree.insert(18);
+    std::cout << "Testing sequence 1:" << std::endl;
+    testHeap(sequence1);
 
-    // 测试先序遍历
-    std::cout << "PerOrder: ";
-    tree.preOrder(); // 输出: 10 5 3 7 15 12 18
-
-    // 测试中序遍历
-    std::cout << "InOrder: ";
-    tree.inOrder(); // 输出: 3 5 7 10 12 15 18
-
-    // 测试后序遍历
-    std::cout << "PostOrder: ";
-    tree.postOrder(); // 输出: 3 7 5 12 18 15 10
+    std::cout << "Testing sequence 2:" << std::endl;
+    testHeap(sequence2);
 
     return 0;
 }
