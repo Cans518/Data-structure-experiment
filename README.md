@@ -1,23 +1,23 @@
-# 二叉树实验 - 实验05
+# 实验07
 
 ## 实验内容
-### 第一题（应用题）：
-> 假设用于通信的电文由8个字符（A、B、C、D、E、F、G、H）组成，其出现的频率为5，31，6，9，10，24，7，8。
-> （1）根据各字符的频率构造哈夫曼树（要求两棵树合并时权小的作为左子树）；
-> （2）并给出各字符的哈夫曼编码。
-> （注意：直接把画好的图，放在插在本word文档中就可以了）  
+### 第一题（简答题）：
+ 1.1 由如图所示的二叉树，回答以下问题： 
+（1）画出该二叉树的前序线索二叉树； 
+（2）画出该二叉树的中序线索二叉树；
+（3）画出该二叉树的后序线索二叉树。
+![alt text](image1.png)
 
 
-### 第二题（应用题）：
-> 已知一棵二叉树的中序序列为：GLDHBEIACJFK
-> 后序序列为：LGHDIEBJKFCA
-> 请画出这棵二叉树。【注意：只要结果（图）】
+1.2 请将下列的树转换成相应的二叉树。
+![alt text](image2.png)
 
-### 第三题（编程题）：
-> 编写程序，判别以下序列是否为堆？（注意：有可能是最小堆或最大堆）如果不是，则把它调整为堆（要求：数据元素交换次数最少），并打印出来。
-> （1）	（100，86，48，73，35，39，42，57，66，21）
-> （2）	（12，70，33，65，24，56，48，92，86，33）
+1.3 请将下列的森林转换成相应的二叉树，并给出该森林的先根遍历、中根遍历以及后根遍历结果。
+![alt text](image3.png)
 
+### 第二题（编程题）：
+画出下图所示的无向图的邻接矩阵，并编写代码，输出该邻接矩阵。
+![alt text](image4.png)
 
 
 ## 实现
@@ -29,11 +29,71 @@
 ## 实验现象
 
 ### 题目一
-![alt text](1.jpg)
+
+#### 1.1
+使用`T(X)`表示是指向`X`的线索指针
+1) 前序线索二叉树：
+![alt text](1-1.png)
+2) 中序线索二叉树：
+![alt text](1-2.png)
+3) 后序线索二叉树：
+![alt text](1-3.png)
+
+#### 1.2
+![alt text](2.png)
+
+#### 1.3
+转化为的二叉树：
+![alt text](3.png)
+
+先根遍历： `ABDECFGHIJKLMNOPQ`
+中根遍历： `DEBFCGHALKJIONQPM`
+后根遍历： `EDFHGCBLKJOQPNMIA` 
 
 ### 题目二
-![alt text](2.jpg)
+题目无向连通图对应的相邻矩阵是：
+![alt text](4.png)
+使用代码实现输出结果：
+```cpp
+#include <iostream>
+#include <vector>
 
-### 题目三
-函数实现在`heap.hpp`，测试函数在`main.cpp`
-![alt text](image.png)
+int main() {
+
+    const int numNodes = 6;
+
+    std::vector<std::vector<int>> adjacencyMatrix(numNodes, std::vector<int>(numNodes, 0));
+
+    adjacencyMatrix[0][1] = 1;
+    adjacencyMatrix[0][3] = 1;
+
+    adjacencyMatrix[1][3] = 1;
+    adjacencyMatrix[1][4] = 1;
+
+    adjacencyMatrix[2][3] = 1;
+    adjacencyMatrix[2][5] = 1;
+
+    adjacencyMatrix[3][4] = 1;
+    adjacencyMatrix[3][5] = 1;
+
+    adjacencyMatrix[4][5] = 1;
+
+    for (int i = 0; i < numNodes; ++i) {
+        for (int j = i + 1; j < numNodes; ++j) {
+            adjacencyMatrix[j][i] = adjacencyMatrix[i][j];
+        }
+    }
+
+    std::cout << "Adjacency matrix of the undirected graph:" << std::endl;
+    for (int i = 0; i < numNodes; ++i) {
+        for (int j = 0; j < numNodes; ++j) {
+            std::cout << adjacencyMatrix[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+代码实现结果：
+![alt text](5.png)
