@@ -1,39 +1,31 @@
-#include <iostream>
-#include <vector>
+#include "Graph.hpp"
 
 int main() {
+    // 定义节点名称
+    std::vector<char> nodeNames = {'A', 'B', 'C', 'D', 'E', 'F'};
 
-    const int numNodes = 6;
+    // 创建图
+    Graph g(nodeNames);
 
-    std::vector<std::vector<int>> adjacencyMatrix(numNodes, std::vector<int>(numNodes, 0));
+    // 添加边
+    g.addEdge('A', 'B'); // A-B
+    g.addEdge('A', 'D'); // A-D
+    g.addEdge('B', 'D'); // B-D
+    g.addEdge('B', 'E'); // B-E
+    g.addEdge('C', 'D'); // C-D
+    g.addEdge('C', 'F'); // C-F
+    g.addEdge('D', 'E'); // D-E
+    g.addEdge('D', 'F'); // D-F
+    g.addEdge('E', 'F'); // E-F
 
-    adjacencyMatrix[0][1] = 1;
-    adjacencyMatrix[0][3] = 1;
+    // 输出图的邻接多重表
+    g.printGraph();
 
-    adjacencyMatrix[1][3] = 1;
-    adjacencyMatrix[1][4] = 1;
+    // 深度优先遍历
+    g.DFS('A');
 
-    adjacencyMatrix[2][3] = 1;
-    adjacencyMatrix[2][5] = 1;
-
-    adjacencyMatrix[3][4] = 1;
-    adjacencyMatrix[3][5] = 1;
-
-    adjacencyMatrix[4][5] = 1;
-
-    for (int i = 0; i < numNodes; ++i) {
-        for (int j = i + 1; j < numNodes; ++j) {
-            adjacencyMatrix[j][i] = adjacencyMatrix[i][j];
-        }
-    }
-
-    std::cout << "Adjacency matrix of the undirected graph:" << std::endl;
-    for (int i = 0; i < numNodes; ++i) {
-        for (int j = 0; j < numNodes; ++j) {
-            std::cout << adjacencyMatrix[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
+    // 广度优先遍历
+    g.BFS('A');
 
     return 0;
 }
